@@ -1,0 +1,23 @@
+<html>
+  <title>Lista de Serviços</title>
+  <body>    
+    <table>
+      <thead>
+        <tr>                    
+          <th>Lote</th>
+          <th>Status</th>
+          <th>Data</th>
+        </tr>
+      </thead>
+      <tbody>
+        <%lotes.forEach(function(l){%>
+        <tr>                    
+          <td><%=l.lote%></td>
+          <td><%=l.status%></td>          
+          <td><%=l.data%></td>
+        </tr>
+        <%});%>
+      </tbody>
+    </table>
+  </body>
+</html>

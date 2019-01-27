@@ -1,0 +1,34 @@
+function VerPedidosDAO(connection){
+  this._connection = connection;
+}
+
+VerPedidosDAO.prototype.listar = function(data, callback){
+               
+   let query = 
+   "SELECT TB_NOTAFISCAL.SEDEX AS SEDEX, TB_CLIENTE.NOME AS NOMECLIENTE,"+ 
+   "TB_ENDERECO.CEP AS CEP, TB_ENDERECO.ENDERECO AS ENDERECO,"+
+   "TB_ENDERECO.BAIRRO AS BAIRRO, TB_ENDERECO.MUNICIPIO AS MUNICIPIO,"+   
+   "TB_ENDERECO.UF AS UF, TB_NOTAFISCAL.VALORTOTALNOTA AS TOTALNOTAFISCAL,"+
+   "TB_NOTAFISCAL.PESO AS PESO, TB_NOTAFISCAL.TIPO_COLETA AS COLETA"+
+
+    " FROM ((((TB_PEDIDO"+
+    " JOIN `TB_NOTAFISCAL` ON ((`TB_PEDIDO`.`NOTAFISCAL_ID` = `TB_NOTAFISCAL`.`ID`)))"+
+    " JOIN `TB_ENDERECO` ON ((`TB_NOTAFISCAL`.`ID` = `TB_ENDERECO`.`ID`)))"+
+    " JOIN `TB_CLIENTE` ON ((`TB_NOTAFISCAL`.`CLIENTE_CODIGO` = `TB_CLIENTE`.`CODIGO`)))"+
+    " JOIN `TB_MINUTA` ON ((`TB_NOTAFISCAL`.`MINUTA_ID` = `TB_MINUTA`.`ID`)))"+
+   
+   " WHERE ((TB_NOTAFISCAL.TIPO_COLETA IN (0 , 1, 2))"+
+   " AND (TB_MINUTA.STATUSMINUTA = 'EXPEDIDA')"+
+   " AND (TB_MINUTA.COLETA_ID > 0)"+
+   " AND (TB_NOTAFISCAL.SEDEX IS NOT NULL))"+
+   " AND LENGTH(SEDEX) > 0"+
+   " AND DATA_EXPEDICAO IS NOT NULL"+ 
+   " AND (DATE(DATA_EXPEDICAO) = DATE(?)) limit 5";       	
+   
+   this._connection.query(query, data, callback);    
+}
+
+module.exports = function(){
+  return VerPedidosDAO;	
+}
+
